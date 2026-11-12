@@ -1,0 +1,76 @@
+group = "com.nosmai.zoom_live"
+version = "1.0.0"
+
+buildscript {
+    ext.kotlin_version = "2.1.0"
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.9.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+    }
+}
+
+apply plugin: "com.android.library"
+// Same Kotlin setup as nosmai_effects_sdk, which every app using this plugin already builds.
+apply plugin: "kotlin-android"
+
+// Keep in step with nosmai_effects_sdk (its android/build.gradle) and the Zoom Video SDK release.
+def nosmaiSdkVersion = "3.0.7"
+def zoomVideoSdkVersion = "2.6.15"
+
+android {
+    namespace = "com.nosmai.zoom_live"
+    compileSdk = 36
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+
+    defaultConfig {
+        // The Zoom Video SDK requires Android 9 (API 28).
+        minSdk = 28
+        consumerProguardFiles "consumer-rules.pro"
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
+
+dependencies {
+    // Zoom ships from Maven Central; the plugin brings it so apps add nothing.
+    implementation("us.zoom.videosdk:zoomvideosdk-core:${zoomVideoSdkVersion}")
+    // Packaged at runtime by the nosmai_effects_sdk plugin; needed here only to compile against.
+    compileOnly("com.nosmai:nosmai-sdk:${nosmaiSdkVersion}@aar")
+}
+
+// The Nosmai AAR is served from its GitHub release. nosmai_effects_sdk registers the same
+// repository; registering it here too keeps this module independent of plugin evaluation order.
+repositories {
+    google()
+    mavenCentral()
+    ivy {
+        name = "nosmaiZoomLiveSdk"
+        url = uri("https://github.com/nosmai/nosmai_effects_sdk_android/releases/download")
+        patternLayout {
+            artifact("v[revision]/[artifact]-[revision].[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+        content {
+            includeModule("com.nosmai", "nosmai-sdk")
+        }
+    }
+}
