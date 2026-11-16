@@ -20,9 +20,19 @@ Goal (from the senior): a Zoom Video SDK package built like the Tencent one (`no
       Zoom init before creating its view (crash); TextureView renderer (ghost overlays); Zoom init in prepare.
       Example build uses --build-number=3 to install over older com.nosmai.effect builds.
 
+- [x] 2026-11-16: iOS plugin code (ObjC, packages/nosmai_zoom_live/ios): ZoomVideoSDK 2.6.15 pod, Nosmai
+      setLiveStreamFrameCallback -> vImage scale/rotate CCW/I420 -> sendVideoFrame (Rotation90, same as Android),
+      UiKitView viewer, permissions, stats. Example: ios/ Runner (bundle com.vativeApps.NosmaiAR, the id the iOS Nosmai key is bound to), NOSMAI_IOS_LICENSE_KEY in config/local.json.
+      Debug iOS build OK; NOT yet run on an iPhone.
+
+- [x] 2026-11-16: iOS two-phone live works (iPhone host -> iPhone viewer, upright, 720x1280). Send was 15 fps with
+      preview 30, conv ~4 ms, drop 0 = thermal cap (serious -> 15). Example host now uses adaptToThermalState: false;
+      overlay shows target fps, paced and iOS heat state. Release builds via `flutter build ios --release` +
+      devicectl install (iOS 17+) / `flutter install --release` (iPhone X, iOS 16, USB only).
+
 ## Remaining
 - [ ] Long-session, weak-network and multi-device tests; viewer audio check by ear.
-- [ ] iOS implementation of the plugin.
+- [ ] iOS device test: Start Live, orientation (Rotation90 vs 270), colours, viewer on iPhone, Android<->iOS.
 - [ ] Decide hosting (own git repo like nosmai_tencent_live, or this repo + git path dependency).
 
 ## Resume

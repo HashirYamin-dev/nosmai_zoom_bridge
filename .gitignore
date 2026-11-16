@@ -50,3 +50,4 @@ app.*.map.json
 # Local secrets: Zoom SDK key/secret, generated tokens, Nosmai license
 /config/*.json
 !/config/*.example.json
+packages/nosmai_zoom_live/android/.gradle/

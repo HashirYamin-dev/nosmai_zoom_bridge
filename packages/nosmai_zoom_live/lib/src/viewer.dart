@@ -238,9 +238,10 @@ class NosmaiLiveViewerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final android = !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+    final supported = !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
     return Stack(fit: StackFit.expand, children: [
-      if (android) const _ZoomVideoView(),
+      if (supported) const _ZoomVideoView(),
       ListenableBuilder(
         listenable: viewer,
         builder: (context, _) =>
@@ -250,12 +251,19 @@ class NosmaiLiveViewerView extends StatelessWidget {
   }
 }
 
-/// Zoom renders into a TextureView, which Flutter composes as a texture layer.
+/// Android: Zoom renders into a TextureView, which Flutter composes as a texture layer.
+/// iOS: Zoom renders into a UIView embedded as a UiKitView.
 class _ZoomVideoView extends StatelessWidget {
   const _ZoomVideoView();
 
   @override
   Widget build(BuildContext context) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return const UiKitView(
+        viewType: NativeBridge.remoteVideoViewType,
+        creationParamsCodec: StandardMessageCodec(),
+      );
+    }
     return const AndroidView(
       viewType: NativeBridge.remoteVideoViewType,
       creationParamsCodec: StandardMessageCodec(),

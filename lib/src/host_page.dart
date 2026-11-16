@@ -47,7 +47,10 @@ class _HostPageState extends State<HostPage> {
       final permissions = await NosmaiZoomLive.requestPermissions();
       if (!permissions.camera) throw StateError('Camera permission is required to host.');
       if (!permissions.microphone) _micMuted = true;
-      await NosmaiZoomLive.initialize(androidLicenseKey: widget.config.nosmaiLicenseKey);
+      await NosmaiZoomLive.initialize(
+        androidLicenseKey: widget.config.nosmaiLicenseKey,
+        iosLicenseKey: widget.config.iosLicenseKey,
+      );
       if (!mounted) return;
       setState(() {
         _nosmaiReady = true;
@@ -133,7 +136,12 @@ class _HostPageState extends State<HostPage> {
       final live = NosmaiLiveBroadcaster(
         credentials: NosmaiLiveCredentials(token: token, userName: widget.userName),
         session: NosmaiLiveSession(widget.sessionName, password: widget.config.sessionPassword),
-        video: const NosmaiLiveVideoConfig(resolution: NosmaiLiveResolution.p720, fps: 30),
+        // Hold 30 FPS even when the phone reports serious heat (the default caps it at 15).
+        video: const NosmaiLiveVideoConfig(
+          resolution: NosmaiLiveResolution.p720,
+          fps: 30,
+          adaptToThermalState: false,
+        ),
       )..addListener(_onLiveChanged);
       live.setMicMuted(_micMuted);
       setState(() {
@@ -216,11 +224,18 @@ class _HostPageState extends State<HostPage> {
             Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_fatal!, textAlign: TextAlign.center)))
           // Stays mounted while closing: Nosmai requires endCameraSession before removal.
           else if (_nosmaiReady)
-            NosmaiCameraPreview(
-              onInitialized: _onCameraReady,
-              onError: (msg) {
-                if (mounted) setState(() => _status = 'Camera error: $msg');
-              },
+            // Show the whole 9:16 frame, exactly what viewers receive. Filling a taller screen
+            // (iOS aspect-fill) would crop the sides and make the preview look zoomed in.
+            Center(
+              child: AspectRatio(
+                aspectRatio: 9 / 16,
+                child: NosmaiCameraPreview(
+                  onInitialized: _onCameraReady,
+                  onError: (msg) {
+                    if (mounted) setState(() => _status = 'Camera error: $msg');
+                  },
+                ),
+              ),
             )
           else
             const Center(child: CircularProgressIndicator()),

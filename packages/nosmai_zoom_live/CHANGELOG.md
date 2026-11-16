@@ -1,3 +1,12 @@
+## Unreleased
+
+- iOS (15.0+): Zoom Video SDK 2.6.15 via CocoaPods. Nosmai's processed
+  `CVPixelBuffer`s (BGRA or NV12) are scaled to Zoom's suggested size, sent as
+  rotated landscape plus a rotation flag when portrait, and converted to I420
+  (BT.601 limited) with Accelerate. Same channels, events, stats and errors as
+  Android; the viewer renders through Zoom's `UIView`. Not yet tested on a device.
+- `NosmaiZoomLive.initialize` uses `iosLicenseKey` on iOS.
+
 ## 1.0.0
 
 - First release as a Flutter plugin (Android). Host apps contain no native

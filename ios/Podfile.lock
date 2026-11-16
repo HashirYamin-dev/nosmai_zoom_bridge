@@ -1,0 +1,46 @@
+PODS:
+  - Flutter (1.0.0)
+  - nosmai_effects_sdk (2.0.2):
+    - Flutter
+    - NosmaiCameraSDK (= 3.0.7)
+  - nosmai_zoom_live (0.1.0):
+    - Flutter
+    - nosmai_effects_sdk
+    - ZoomVideoSDK/util (= 2.6.15)
+    - ZoomVideoSDK/zContext (= 2.6.15)
+    - ZoomVideoSDK/ZoomTask (= 2.6.15)
+    - ZoomVideoSDK/ZoomVideoSDK (= 2.6.15)
+  - NosmaiCameraSDK (3.0.7)
+  - ZoomVideoSDK/util (2.6.15)
+  - ZoomVideoSDK/zContext (2.6.15)
+  - ZoomVideoSDK/ZoomTask (2.6.15)
+  - ZoomVideoSDK/ZoomVideoSDK (2.6.15)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - nosmai_effects_sdk (from `.symlinks/plugins/nosmai_effects_sdk/ios`)
+  - nosmai_zoom_live (from `.symlinks/plugins/nosmai_zoom_live/ios`)
+
+SPEC REPOS:
+  trunk:
+    - NosmaiCameraSDK
+    - ZoomVideoSDK
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  nosmai_effects_sdk:
+    :path: ".symlinks/plugins/nosmai_effects_sdk/ios"
+  nosmai_zoom_live:
+    :path: ".symlinks/plugins/nosmai_zoom_live/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+  nosmai_effects_sdk: 46cf5b65d29a19d72b48d47a777bb52d7d8f9be8
+  nosmai_zoom_live: 36b195530ee325513caae47b891202286e292960
+  NosmaiCameraSDK: b914cb19ea0f88faf537e726f0b09bfa20ba3bc7
+  ZoomVideoSDK: 4a042fd51b0de9e679c17084d9f025cae3b62aac
+
+PODFILE CHECKSUM: 53a6aebc29ccee84c41f92f409fc20cd4ca011f1
+
+COCOAPODS: 1.17.0

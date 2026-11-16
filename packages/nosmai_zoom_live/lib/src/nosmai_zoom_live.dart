@@ -55,15 +55,18 @@ class NosmaiZoomLive {
   }
 
   static Future<void> _initialize(String? androidKey, String? iosKey) async {
-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
-      throw const NosmaiLiveException('unsupported_platform',
-          'nosmai_zoom_live currently runs on Android devices only; iOS support is planned.');
+    final ios = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+    if (kIsWeb || (defaultTargetPlatform != TargetPlatform.android && !ios)) {
+      throw const NosmaiLiveException(
+          'unsupported_platform', 'nosmai_zoom_live runs on Android and iOS devices only.');
     }
-    final key = androidKey?.trim() ?? '';
+    final key = (ios ? iosKey : androidKey)?.trim() ?? '';
     if (key.isEmpty) {
-      throw const NosmaiLiveException('missing_license_key', 'Pass the Nosmai Android license key.');
+      throw NosmaiLiveException(
+          'missing_license_key', 'Pass the Nosmai ${ios ? 'iOS' : 'Android'} license key.');
     }
-    if (NosmaiFlutter.instance.isInitialized) {
+    // iOS frames reach Zoom as CVPixelBuffers, so the order does not matter there.
+    if (!ios && NosmaiFlutter.instance.isInitialized) {
       debugPrint('[NosmaiZoomLive] Nosmai was initialized before NosmaiZoomLive.initialize; '
           'frames will reach Zoom through the slower CPU path.');
     }
@@ -73,7 +76,7 @@ class NosmaiZoomLive {
     if (!accepted) {
       throw const NosmaiLiveException('license_rejected',
           'Nosmai rejected the license key. Check that it was issued for this '
-          'platform and this applicationId.');
+          'platform and this applicationId (Android) or bundle identifier (iOS).');
     }
     _initialized = true;
   }

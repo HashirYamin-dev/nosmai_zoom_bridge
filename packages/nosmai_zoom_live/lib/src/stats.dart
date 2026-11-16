@@ -53,6 +53,9 @@ class NosmaiLiveStats {
     this.framesDropped = 0,
     this.nosmaiFps = 0,
     this.sendFps = 0,
+    this.targetFps = 0,
+    this.framesPaced = 0,
+    this.thermal = '',
     this.convertMs = 0,
     this.transport = '',
     this.pipelineNote = '',
@@ -89,6 +92,9 @@ class NosmaiLiveStats {
       framesDropped: i(source, 'dropped'),
       nosmaiFps: d(source, 'inputFps'),
       sendFps: d(source, 'txFps'),
+      targetFps: i(source, 'targetFps'),
+      framesPaced: i(source, 'paced'),
+      thermal: source['thermal']?.toString() ?? '',
       convertMs: d(source, 'convertMsAvg'),
       transport: source['transport']?.toString() ?? '',
       pipelineNote: source['lastError']?.toString() ?? '',
@@ -138,6 +144,16 @@ class NosmaiLiveStats {
   /// Broadcaster only: frames per second handed to Zoom, measured by the plugin.
   /// Lower than [nosmaiFps] when pacing to Zoom's rate or the thermal cap.
   final double sendFps;
+
+  /// Broadcaster only: the frame rate the plugin is aiming for, after the thermal cap.
+  final int targetFps;
+
+  /// Broadcaster only: frames skipped to hold [targetFps].
+  final int framesPaced;
+
+  /// Broadcaster only, iOS: the phone's thermal state (`nominal`, `fair`,
+  /// `serious` or `critical`); empty where not reported.
+  final String thermal;
 
   /// Broadcaster only: average time to turn a Nosmai frame into Zoom's I420 buffer.
   final double convertMs;

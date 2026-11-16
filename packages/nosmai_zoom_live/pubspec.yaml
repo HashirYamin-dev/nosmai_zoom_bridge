@@ -25,3 +25,5 @@ flutter:
       android:
         package: com.nosmai.zoom_live
         pluginClass: NosmaiZoomLivePlugin
+      ios:
+        pluginClass: NosmaiZoomLivePlugin

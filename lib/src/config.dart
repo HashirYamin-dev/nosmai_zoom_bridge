@@ -11,6 +11,7 @@ import 'package:nosmai_zoom_live/nosmai_zoom_live.dart';
 class AppConfig {
   const AppConfig({
     this.nosmaiLicenseKey = '',
+    this.nosmaiIosLicenseKey = '',
     this.sessionName = '',
     this.sessionPassword = '',
     this.hostToken = '',
@@ -20,13 +21,20 @@ class AppConfig {
 
   const AppConfig.fromEnvironment()
       : nosmaiLicenseKey = const String.fromEnvironment('NOSMAI_LICENSE_KEY'),
+        nosmaiIosLicenseKey = const String.fromEnvironment('NOSMAI_IOS_LICENSE_KEY'),
         sessionName = const String.fromEnvironment('ZOOM_SESSION_NAME', defaultValue: 'nosmai-live'),
         sessionPassword = const String.fromEnvironment('ZOOM_SESSION_PASSWORD'),
         hostToken = const String.fromEnvironment('ZOOM_HOST_TOKEN'),
         viewerToken = const String.fromEnvironment('ZOOM_VIEWER_TOKEN'),
         tokenUrl = const String.fromEnvironment('ZOOM_TOKEN_URL');
 
+  /// Nosmai key for Android (bound to the applicationId).
   final String nosmaiLicenseKey;
+
+  /// Nosmai key for iOS (bound to the bundle identifier). Empty: [nosmaiLicenseKey] is used.
+  final String nosmaiIosLicenseKey;
+
+  String get iosLicenseKey => nosmaiIosLicenseKey.isNotEmpty ? nosmaiIosLicenseKey : nosmaiLicenseKey;
   final String sessionName;
   final String sessionPassword;
   final String hostToken;

@@ -18,7 +18,7 @@ Fallback: Nosmai I420 frame callback ─► one copy ─► sendVideoFrame
 |---|---|
 | Zoom Video SDK (Android) | `us.zoom.videosdk:zoomvideosdk-core:2.6.15`, brought in by the plugin |
 | Nosmai | `nosmai_effects_sdk 2.0.2` → `nosmai-sdk 3.0.7` |
-| Flutter | 3.29+ (built with 3.47.5). Android minSdk 28, OpenGL ES 3. Android only for now; iOS is planned |
+| Flutter | 3.29+ (built with 3.47.5). Android minSdk 28, OpenGL ES 3. iOS 15+ (code complete, device test pending) |
 
 ## Run the example
 
@@ -32,6 +32,7 @@ Fallback: Nosmai I420 frame callback ─► one copy ─► sendVideoFrame
    Tokens are compiled into the build, so run the app again after regenerating them.
 2. **Nosmai key**: set `NOSMAI_LICENSE_KEY` in `config/local.json`. The key is bound to applicationId
    `com.nosmai.effect`, so this app can't be installed next to the Tencent example, which uses the same id.
+   On iOS the app's bundle id is `com.vativeApps.NosmaiAR`; put the Nosmai key issued for it in `NOSMAI_IOS_LICENSE_KEY`.
 3. **Run** on two arm64 phones:
    ```bash
    flutter run --dart-define-from-file=config/local.json
@@ -75,4 +76,10 @@ after them, and cloud filters download when tapped.
   flag), the viewer crashed if a permission dialog appeared before Zoom initialized, ghost text appeared over the
   viewer's video (now a TextureView), and the first Start Live froze the UI for ~1.5 s (Zoom now initializes earlier).
 
-**Still to do before release:** long sessions, weak networks, more phone models, and iOS.
+- iOS: the plugin's native iOS code (`packages/nosmai_zoom_live/ios/Classes`) builds in a debug iOS build with no
+  warnings. It has not been run on an iPhone yet. Run it from Xcode (`ios/Runner.xcworkspace`) after
+  `flutter build ios --debug --no-codesign --dart-define-from-file=config/local.json`, which writes the dart-defines
+  Xcode uses. Set `NOSMAI_IOS_LICENSE_KEY` in `config/local.json` if the iOS key differs from the Android one.
+
+**Still to do before release:** iOS device test (orientation, colours, viewer), long sessions, weak networks and more
+phone models.

@@ -29,13 +29,13 @@ the video they receive.
 |---|---|
 | Flutter | 3.29 or later |
 | Android | **minSdk 28** (a Zoom Video SDK requirement), physical arm64 phone, OpenGL ES 3 |
-| iOS | Not yet. Planned as a follow-up |
-| Nosmai | An Android license key, bound to your applicationId |
+| iOS | **15.0** or later, physical iPhone (no simulator: Nosmai's iOS SDK has no arm64 simulator slice). Code complete; device test pending |
+| Nosmai | A license key per platform: Android bound to your applicationId, iOS to your bundle identifier |
 | Zoom | A Video SDK app (Zoom App Marketplace → Develop → Build Video SDK), plus a session JWT per user issued by your server |
 
 The plugin depends on `nosmai_effects_sdk` 2.0.x and on the Zoom Video SDK
-`us.zoom.videosdk:zoomvideosdk-core` 2.6.15 (Maven Central), and pulls both in
-for you.
+`us.zoom.videosdk:zoomvideosdk-core` 2.6.15 (Maven Central) on Android and the
+`ZoomVideoSDK/ZoomVideoSDK` 2.6.15 CocoaPod on iOS, and pulls them in for you.
 
 ## Install
 
@@ -58,6 +58,25 @@ defaultConfig {
 That is the only change. The plugin merges the camera, microphone, Bluetooth
 and network permissions, and the R8 keep rules for Zoom and Nosmai. You do not
 need to edit `MainActivity`, the manifest, ProGuard files or Gradle repositories.
+
+**iOS:** set the platform in `ios/Podfile` and add the two usage descriptions to
+`ios/Runner/Info.plist`:
+
+```ruby
+platform :ios, '15.0'
+```
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Camera is used for the live video with Nosmai effects.</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Microphone is used for live audio.</string>
+```
+
+Pass the iOS key as well: `NosmaiZoomLive.initialize(androidLicenseKey: ..., iosLicenseKey: ...)`.
+On iOS Nosmai's processed `CVPixelBuffer`s are scaled, turned to landscape when
+portrait, converted to I420 with Accelerate and sent to Zoom; the viewer renders
+through Zoom's own `UIView` (a `UiKitView`).
 
 ## Quick start
 

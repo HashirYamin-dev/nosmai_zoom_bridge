@@ -23,6 +23,8 @@ class StatsOverlay extends StatelessWidget {
         'zoom out ${stats.fps} fps ${stats.width}x${stats.height}  latency ${stats.latencyMs} ms',
         'path ${stats.transport.isEmpty ? '-' : stats.transport}  conv ${f(stats.convertMs, 2)} ms  '
             'sent ${stats.framesSent}  drop ${stats.framesDropped}',
+        'target ${stats.targetFps} fps  paced ${stats.framesPaced}'
+            '${stats.thermal.isEmpty ? '' : '  heat ${stats.thermal}'}',
         if (stats.pipelineNote.isNotEmpty) 'note ${stats.pipelineNote}',
       ] else ...[
         '${stats.width}x${stats.height}  ${stats.bitrateKbps} kbps',

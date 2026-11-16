@@ -399,8 +399,12 @@ internal class NosmaiZoomVideoSource(
      * a quarter interval early, so camera jitter at the target rate itself drops nothing.
      */
     private fun admitFrame(): Boolean {
+        val fps = effectiveFps()
+        // The camera runs at 30: pacing at its own rate would only drop frames that arrive with
+        // a little jitter, so at NO_PACING_FPS or more every frame passes.
+        if (fps >= NO_PACING_FPS) return true
         val now = SystemClock.elapsedRealtimeNanos()
-        val interval = 1_000_000_000L / effectiveFps()
+        val interval = 1_000_000_000L / fps
         val deadline = nextDeadlineNs
         if (deadline != 0L && now + interval / 4 < deadline) return false
         nextDeadlineNs = if (deadline == 0L || now - deadline > RESYNC_AFTER_NS) now + interval else deadline + interval
@@ -501,6 +505,7 @@ internal class NosmaiZoomVideoSource(
         private const val TEXTURE_FAILURES_BEFORE_FALLBACK = 3
         private const val DRAIN_TIMEOUT_MS = 2_000L
         private const val RESYNC_AFTER_NS = 200_000_000L
+        private const val NO_PACING_FPS = 30
 
         private fun capFor(status: Int): Int = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.Q -> Int.MAX_VALUE
